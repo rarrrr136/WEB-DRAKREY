@@ -152,9 +152,11 @@
         @media (max-width: 768px) {
             .menu-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
             }
             .header {
                 flex-direction: column;
+                gap: 20px;
             }
             .header-logo {
                 width: 130px;
@@ -236,22 +238,22 @@
     });
 
     // CEK LOGIN
-    if(localStorage.getItem('darkray_logged') !== 'true') {
-    window.location.href = 'login.html';
+    if (localStorage.getItem('darkray_logged') !== 'true') {
+        window.location.href = 'login.html';
     }
     
     let currentUser = localStorage.getItem('darkray_current_user') || '';
-    // Tampilkan nama user, termasuk admin (REYY.X) tetap muncul sebagai "ADMIN: REYY.X"
     let isAdmin = (currentUser === 'REYY.X');
     document.getElementById('userBadge').innerHTML = isAdmin ? 'ADMIN: REYY.X' : `USER: ${currentUser}`;
     
-    // MENU (TANPA ADMIN PANEL)
+    // ==================== MENU (TAMBAH BUG WHATSAPP) ====================
     const menus = [
         { icon: "💀", title: "DDOS 7 LAYER", desc: "Stress test server", link: "ddos.html" },
         { icon: "📍", title: "GEO TRACKER", desc: "Lacak IP address", link: "geo.html" },
         { icon: "❤️", title: "SUNTIK LIKE", desc: "Auto like TikTok", link: "ttlike.html" },
         { icon: "👁️", title: "SUNTIK PENONTON", desc: "Boost viewers TikTok", link: "ttboost.html" },
-        { icon: "🎣", title: "PHISHING LINK", desc: "Dapatkan IP target", link: "ihir.html" }
+        { icon: "🎣", title: "PHISHING LINK", desc: "Dapatkan IP target", link: "ihir.html" },
+        { icon: "🐞", title: "BUG WHATSAPP", desc: "Bug WA & DDoS", link: "bugwa.html" }   // <-- MENU BARU
     ];
     
     const menuGrid = document.getElementById('menuGrid');
