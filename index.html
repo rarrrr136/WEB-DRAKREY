@@ -236,8 +236,8 @@
     });
 
     // CEK LOGIN
-    if (localStorage.getItem('darkray_logged') !== 'true') {
-        window.location.href = 'login.html';
+    if(localStorage.getItem('darkray_logged') !== 'true') {
+    window.location.href = 'login.html';
     }
     
     let currentUser = localStorage.getItem('darkray_current_user') || '';
