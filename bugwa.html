@@ -5,566 +5,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>DARKREY - BUG WHATSAPP</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: #000;
-            font-family: 'Courier New', monospace;
-            color: #0f0;
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        #matrixCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            opacity: 0.2;
-            pointer-events: none;
-        }
-
-        .container {
-            position: relative;
-            z-index: 10;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-        }
-
-        .card {
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(10px);
-            border: 1px solid #f00;
-            border-radius: 24px;
-            padding: 30px;
-            width: 100%;
-            box-shadow: 0 0 30px rgba(255,0,0,0.2);
-        }
-
-        h1 {
-            color: #f00;
-            text-align: center;
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-        }
-
-        .sub {
-            text-align: center;
-            color: #888;
-            font-size: 0.7rem;
-            margin-bottom: 20px;
-        }
-
-        .back-btn {
-            display: inline-block;
-            background: #333;
-            color: #f00;
-            border: 1px solid #f00;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            font-family: monospace;
-            text-decoration: none;
-        }
-
-        .info-box {
-            background: #0a0a0a;
-            border: 1px solid #f00;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 12px;
-        }
-
-        .sender-box {
-            background: #1a1a1a;
-            border: 1px solid #0f0;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .pairing-box {
-            background: #0a0a0a;
-            border: 1px solid #f0f;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #f00;
-            font-size: 0.8rem;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            background: #000;
-            border: 1px solid #f00;
-            color: #0f0;
-            border-radius: 12px;
-            font-family: monospace;
-            font-size: 14px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #000;
-            border: 1px solid #f00;
-            color: #f00;
-            border-radius: 12px;
-            font-family: monospace;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 8px;
-        }
-
-        button:hover {
-            background: #f00;
-            color: #000;
-            transform: scale(1.02);
-        }
-
-        .method-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin: 20px 0;
-        }
-
-        .method-card {
-            background: #0a0a0a;
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .method-card:hover {
-            border-color: #f00;
-            transform: translateY(-2px);
-        }
-
-        .method-card.active {
-            border-color: #f00;
-            background: #1a1a1a;
-            box-shadow: 0 0 10px rgba(255,0,0,0.3);
-        }
-
-        .method-name {
-            color: #f00;
-            font-weight: bold;
-            font-size: 1rem;
-        }
-
-        .method-desc {
-            color: #888;
-            font-size: 0.7rem;
-            margin-top: 4px;
-        }
-
-        .log {
-            background: #000;
-            border: 1px solid #f00;
-            border-radius: 12px;
-            height: 200px;
-            overflow-y: auto;
-            padding: 12px;
-            font-size: 11px;
-            margin-top: 20px;
-        }
-
-        .log-entry {
-            border-left: 2px solid #f00;
-            padding-left: 10px;
-            margin: 6px 0;
-            word-break: break-all;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            margin-top: 5px;
-        }
-
-        .status-connected {
-            background: #0a0;
-            color: #000;
-        }
-
-        .status-disconnected {
-            background: #f00;
-            color: #000;
-        }
-
-        @media (max-width: 600px) {
-            .method-grid {
-                grid-template-columns: 1fr;
-            }
-            .card {
-                padding: 20px;
-            }
-            h1 {
-                font-size: 1.4rem;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; font-family: 'Courier New', monospace; color: #0f0; min-height: 100vh; position: relative; overflow-x: hidden; }
+        #matrixCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.2; pointer-events: none; }
+        .container { position: relative; z-index: 10; max-width: 800px; margin: 0 auto; padding: 20px; min-height: 100vh; display: flex; align-items: center; }
+        .card { background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); border: 1px solid #f00; border-radius: 24px; padding: 30px; width: 100%; box-shadow: 0 0 30px rgba(255,0,0,0.2); }
+        h1 { color: #f00; text-align: center; font-size: 1.8rem; margin-bottom: 5px; }
+        .sub { text-align: center; color: #888; font-size: 0.7rem; margin-bottom: 20px; }
+        .back-btn { display: inline-block; background: #333; color: #f00; border: 1px solid #f00; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-family: monospace; text-decoration: none; }
+        .info-box { background: #0a0a0a; border: 1px solid #f00; border-radius: 12px; padding: 12px; margin-bottom: 20px; text-align: center; font-size: 12px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; color: #f00; font-size: 0.8rem; }
+        input { width: 100%; padding: 12px; background: #000; border: 1px solid #f00; color: #0f0; border-radius: 12px; font-family: monospace; font-size: 14px; }
+        button { width: 100%; padding: 12px; background: #000; border: 1px solid #f00; color: #f00; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 8px; }
+        button:hover { background: #f00; color: #000; }
+        .method-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 20px 0; }
+        .method-card { background: #0a0a0a; border: 1px solid #333; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; }
+        .method-card.active { border-color: #f00; background: #1a1a1a; }
+        .method-name { color: #f00; font-weight: bold; }
+        .method-desc { color: #888; font-size: 0.7rem; margin-top: 4px; }
+        .log { background: #000; border: 1px solid #f00; border-radius: 12px; height: 200px; overflow-y: auto; padding: 12px; font-size: 11px; margin-top: 20px; }
+        .log-entry { border-left: 2px solid #f00; padding-left: 10px; margin: 6px 0; }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; }
+        .status-connected { background: #0a0; color: #000; }
+        .status-disconnected { background: #f00; color: #000; }
+        @media (max-width: 600px) { .method-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-
 <canvas id="matrixCanvas"></canvas>
-
 <div class="container">
     <div class="card">
         <a href="index.html" class="back-btn">← BACK</a>
         <h1>🐞 BUG WHATSAPP</h1>
-        <div class="sub">WhatsApp Attack Tool | Sender + Pairing Code</div>
+        <div class="sub">Real Attack via WhatsApp API</div>
 
-        <!-- SENDER & PAIRING -->
-        <div class="sender-box">
-            <div class="input-group">
-                <label>📱 SENDER NUMBER (nomor WA kamu)</label>
-                <input type="text" id="senderNumber" placeholder="628xxxxxxxxxx (tanpa +)">
-            </div>
-            <button id="pairBtn" onclick="requestPairing()">🔗 REQUEST PAIRING CODE</button>
-            <div id="pairingResult" style="margin-top: 10px; font-size: 12px;"></div>
+        <div class="info-box">🔧 Setup Server: pastikan Node.js server berjalan di <strong>http://IP_VPS:3000</strong></div>
+
+        <div class="input-group">
+            <label>📱 SERVER API URL</label>
+            <input type="text" id="apiUrl" placeholder="http://IP_VPS:3000" value="http://localhost:3000">
         </div>
 
-        <div class="pairing-box" id="pairingBox" style="display: none;">
-            <div class="input-group">
-                <label>🔑 KODE PAIRING (masukkan ke WhatsApp perangkat lain)</label>
-                <input type="text" id="pairingCode" placeholder="Kode pairing muncul di sini" readonly>
-                <button onclick="copyPairingCode()">📋 COPY KODE</button>
-            </div>
-            <div id="connectionStatus" style="margin-top: 10px;">
-                <span class="status-badge status-disconnected" id="statusBadge">⚫ DISCONNECTED</span>
-            </div>
+        <div class="input-group">
+            <label>📱 SENDER NUMBER (nomor WA kamu)</label>
+            <input type="text" id="senderNumber" placeholder="628xxxxxxxxxx">
         </div>
+        <button onclick="requestPairing()">🔗 REQUEST PAIRING CODE</button>
+        <div id="pairingResult" style="margin-top:10px; font-size:12px;"></div>
 
-        <!-- TARGET & SETTINGS -->
         <div class="input-group">
             <label>🎯 TARGET NUMBER</label>
-            <input type="text" id="targetNumber" placeholder="628xxxxxxxxxx (tanpa +)">
+            <input type="text" id="targetNumber" placeholder="628xxxxxxxxxx">
         </div>
-
         <div class="input-group">
             <label>⏱️ DURASI (detik)</label>
-            <input type="number" id="duration" value="60" min="10" max="300">
+            <input type="number" id="duration" value="60">
         </div>
-
         <div class="input-group">
             <label>⚡ DELAY (ms, minimal 100)</label>
-            <input type="number" id="delay" value="500" min="100" max="5000">
+            <input type="number" id="delay" value="500">
         </div>
 
-        <!-- MENU ATTACK (8 METHOD) -->
-        <div style="margin: 15px 0 10px 0; color:#f00; text-align:center;">⚔️ BUGS MENU ⚔️</div>
         <div class="method-grid" id="methodGrid">
-            <div class="method-card" data-method="xbug">
-                <div class="method-name">/xbug number</div>
-                <div class="method-desc">Delay invisible Spam</div>
-            </div>
-            <div class="method-card" data-method="xspam">
-                <div class="method-name">/xspam number</div>
-                <div class="method-desc">Delay Hard Spam</div>
-            </div>
-            <div class="method-card" data-method="xdelay">
-                <div class="method-name">/xdelay number</div>
-                <div class="method-desc">Delay Spam V2</div>
-            </div>
-            <div class="method-card" data-method="xfunc">
-                <div class="method-name">/xfunc number</div>
-                <div class="method-desc">Testing Function</div>
-            </div>
-            <div class="method-card" data-method="xking">
-                <div class="method-name">/xking number</div>
-                <div class="method-desc">Delay Can Spam</div>
-            </div>
-            <div class="method-card" data-method="xflow">
-                <div class="method-name">/xflow number</div>
-                <div class="method-desc">Draning Quota Spam</div>
-            </div>
-            <div class="method-card" data-method="xsow">
-                <div class="method-name">/xsow number</div>
-                <div class="method-desc">Delay Mention Spam</div>
-            </div>
-            <div class="method-card" data-method="xfly">
-                <div class="method-name">/xfly number</div>
-                <div class="method-desc">Draning Hard Spam</div>
-            </div>
+            <div class="method-card" data-method="xbug"><div class="method-name">/xbug</div><div class="method-desc">Delay invisible Spam</div></div>
+            <div class="method-card" data-method="xspam"><div class="method-name">/xspam</div><div class="method-desc">Delay Hard Spam</div></div>
+            <div class="method-card" data-method="xdelay"><div class="method-name">/xdelay</div><div class="method-desc">Delay Spam V2</div></div>
+            <div class="method-card" data-method="xfunc"><div class="method-name">/xfunc</div><div class="method-desc">Testing Function</div></div>
+            <div class="method-card" data-method="xking"><div class="method-name">/xking</div><div class="method-desc">Delay Can Spam</div></div>
+            <div class="method-card" data-method="xflow"><div class="method-name">/xflow</div><div class="method-desc">Draning Quota Spam</div></div>
+            <div class="method-card" data-method="xsow"><div class="method-name">/xsow</div><div class="method-desc">Delay Mention Spam</div></div>
+            <div class="method-card" data-method="xfly"><div class="method-name">/xfly</div><div class="method-desc">Draning Hard Spam</div></div>
         </div>
 
-        <div style="display: flex; gap: 10px;">
-            <button id="startBtn" onclick="startAttack()" style="flex:1;">🚀 START ATTACK</button>
-            <button id="stopBtn" onclick="stopAttack()" style="flex:1;">⏹️ STOP ATTACK</button>
-        </div>
-
-        <div id="logContainer" class="log">[READY] Setup sender & pairing code dulu</div>
+        <div style="display: flex; gap:10px;"><button onclick="startAttack()" style="flex:1;">🚀 START</button><button onclick="stopAttack()" style="flex:1;">⏹️ STOP</button></div>
+        <div id="logContainer" class="log">[READY]</div>
     </div>
 </div>
 
 <script>
-    // MATRIX RAIN
-    const canvas = document.getElementById('matrixCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const chars = "01アイウエオカキクケコサシスセソタチツテト0123456789";
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = [];
-    for(let i = 0; i < columns; i++) drops[i] = 1;
-    
-    function drawMatrix() {
-        ctx.fillStyle = 'rgba(0,0,0,0.04)';
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle = '#0f0';
-        ctx.font = fontSize + 'px monospace';
-        for(let i = 0; i < drops.length; i++) {
-            const text = chars[Math.floor(Math.random() * chars.length)];
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        }
-    }
-    setInterval(drawMatrix, 50);
-    window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    });
+    if(localStorage.getItem('darkray_logged')!=='true') window.location.href='login.html';
+    const canvas = document.getElementById('matrixCanvas'); const ctx = canvas.getContext('2d');
+    canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+    const chars="01アイウエオカキクケコサシスセソタチツテト0123456789", fontSize=14, cols=canvas.width/fontSize, drops=[]; for(let i=0;i<cols;i++) drops[i]=1;
+    function draw(){ ctx.fillStyle='rgba(0,0,0,0.04)'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#0f0'; ctx.font=fontSize+'px monospace'; for(let i=0;i<drops.length;i++){ const t=chars[Math.floor(Math.random()*chars.length)]; ctx.fillText(t,i*fontSize,drops[i]*fontSize); if(drops[i]*fontSize>canvas.height&&Math.random()>0.975) drops[i]=0; drops[i]++; } }
+    setInterval(draw,50); window.addEventListener('resize',()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
 
-    // CEK LOGIN
-    if(localStorage.getItem('darkray_logged') !== 'true') {
-        window.location.href = 'login.html';
-    }
+    let currentMethod='xbug', attackActive=false, attackInterval=null;
+    document.querySelectorAll('.method-card').forEach(c=>{ c.addEventListener('click',()=>{ document.querySelectorAll('.method-card').forEach(c=>c.classList.remove('active')); c.classList.add('active'); currentMethod=c.dataset.method; addLog(`Method: ${c.querySelector('.method-name').innerText}`,false); }); });
+    document.querySelector('.method-card').classList.add('active');
 
-    // ==================== GLOBAL VARIABLES ====================
-    let currentMethod = 'xbug';
-    let attackActive = false;
-    let attackInterval = null;
-    let wsConnection = null;
-    let isConnected = false;
-    let pairingCodeGenerated = false;
+    function addLog(msg,isError){ const log=document.getElementById('logContainer'); const div=document.createElement('div'); div.className='log-entry'; div.innerHTML=`[${new Date().toLocaleTimeString()}] ${msg}`; div.style.color=isError?'#ff8888':'#88ff88'; log.appendChild(div); div.scrollIntoView(); if(log.children.length>100) log.removeChild(log.children[0]); }
 
-    // Method selector
-    const methodCards = document.querySelectorAll('.method-card');
-    methodCards.forEach(card => {
-        card.addEventListener('click', () => {
-            methodCards.forEach(c => c.classList.remove('active'));
-            card.classList.add('active');
-            currentMethod = card.dataset.method;
-            addLog(`⚔️ Method dipilih: ${card.querySelector('.method-name').innerText}`, false);
-        });
-    });
-    // Set default active
-    methodCards[0].classList.add('active');
+    async function apiCall(endpoint, data){ const apiUrl=document.getElementById('apiUrl').value.trim(); try{ const res=await fetch(`${apiUrl}${endpoint}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}); return await res.json(); }catch(e){ addLog(`API Error: ${e.message}`,true); return {success:false,message:e.message}; } }
 
-    function addLog(msg, isError = false) {
-        const logDiv = document.getElementById('logContainer');
-        const div = document.createElement('div');
-        div.className = 'log-entry';
-        const time = new Date().toLocaleTimeString('id-ID', { hour12: false });
-        div.innerHTML = `[${time}] ${msg}`;
-        div.style.color = isError ? '#ff8888' : '#88ff88';
-        logDiv.appendChild(div);
-        div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        if(logDiv.children.length > 100) logDiv.removeChild(logDiv.children[0]);
-    }
+    async function requestPairing(){ const sender=document.getElementById('senderNumber').value.trim(); if(!sender){ addLog('Masukkan nomor sender!',true); return; } addLog(`Request pairing untuk ${sender}...`,false); const res=await apiCall('/api/pair',{sender}); if(res.success){ document.getElementById('pairingResult').innerHTML=`✅ Kode pairing: <strong>${res.pairingCode}</strong><br>Masukkan kode ini di WhatsApp (Settings > Linked Devices)`; addLog(`Kode pairing: ${res.pairingCode}`,false); }else{ addLog(`Gagal: ${res.message}`,true); } }
 
-    function updateConnectionStatus(connected) {
-        isConnected = connected;
-        const badge = document.getElementById('statusBadge');
-        if(connected) {
-            badge.innerHTML = '🟢 CONNECTED';
-            badge.className = 'status-badge status-connected';
-            addLog('✅ Bot WhatsApp terhubung!', false);
-        } else {
-            badge.innerHTML = '⚫ DISCONNECTED';
-            badge.className = 'status-badge status-disconnected';
-            addLog('⚠️ Bot WhatsApp terputus', true);
-        }
-    }
+    async function startAttack(){ const sender=document.getElementById('senderNumber').value.trim(); const target=document.getElementById('targetNumber').value.trim(); const duration=parseInt(document.getElementById('duration').value); const delay=parseInt(document.getElementById('delay').value); if(!sender||!target){ addLog('Sender & target harus diisi!',true); return; } if(attackActive){ addLog('Attack sedang berjalan!',true); return; } addLog(`🔥 Start attack ke ${target} dengan method ${currentMethod} selama ${duration}s`,false); const res=await apiCall('/api/attack',{sender,target,method:currentMethod,duration,delay,message:`[${currentMethod.toUpperCase()}] BUG WA ATTACK`}); if(res.success){ attackActive=true; addLog(`✅ Attack dimulai`,false); setTimeout(()=>{ if(attackActive){ attackActive=false; addLog(`⏹️ Attack selesai setelah ${duration} detik`,true); } },duration*1000); }else{ addLog(`❌ Gagal: ${res.message}`,true); } }
 
-    // ==================== PAIRING (SIMULASI) ====================
-    // Karena pairing asli butuh backend Node.js, kita simulasi dulu
-    // Tapi gue kasih sistem pairing code dummy biar mirip kayak asli
-    function requestPairing() {
-        const sender = document.getElementById('senderNumber').value.trim();
-        if(!sender) {
-            addLog('❌ Masukkan nomor sender dulu!', true);
-            return;
-        }
-        if(!/^\d+$/.test(sender)) {
-            addLog('❌ Nomor harus angka! Contoh: 628123456789', true);
-            return;
-        }
-        
-        addLog(`🔗 Meminta pairing code untuk ${sender}...`, false);
-        
-        // Simulasi pairing (backend asli butuh Node.js)
-        // Generate kode pairing dummy 8 digit
-        const dummyCode = Math.floor(10000000 + Math.random() * 90000000).toString();
-        document.getElementById('pairingCode').value = dummyCode;
-        document.getElementById('pairingBox').style.display = 'block';
-        pairingCodeGenerated = true;
-        
-        addLog(`✅ Kode pairing: ${dummyCode}`, false);
-        addLog(`📱 Masukkan kode ini di WhatsApp perangkat lain (Settings > Linked Devices > Link a Device)`, false);
-        
-        // Simulasi koneksi setelah 3 detik (biar mirip)
-        setTimeout(() => {
-            if(pairingCodeGenerated) {
-                updateConnectionStatus(true);
-                addLog(`🔌 Bot WhatsApp untuk nomor ${sender} berhasil terhubung!`, false);
-            }
-        }, 3000);
-    }
-    
-    function copyPairingCode() {
-        const codeInput = document.getElementById('pairingCode');
-        codeInput.select();
-        document.execCommand('copy');
-        addLog('📋 Kode pairing berhasil di-copy!', false);
-    }
-    
-    // ==================== ATTACK (SIMULASI) ====================
-    async function sendAttackPacket(target, method) {
-        // Simulasi kirim request ke API (backend asli akan kirim pesan WA)
-        addLog(`📡 Mengirim ${method} ke ${target}...`, false);
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve({ success: true, message: `Packet ${method} terkirim` });
-            }, 50);
-        });
-    }
-    
-    async function attackWorker() {
-        const target = document.getElementById('targetNumber').value.trim();
-        const duration = parseInt(document.getElementById('duration').value);
-        const delay = parseInt(document.getElementById('delay').value);
-        
-        if(!target) {
-            addLog('❌ Target number kosong!', true);
-            return false;
-        }
-        if(!/^\d+$/.test(target)) {
-            addLog('❌ Target harus angka!', true);
-            return false;
-        }
-        if(!isConnected) {
-            addLog('❌ Bot belum terhubung! Pairing dulu.', true);
-            return false;
-        }
-        
-        let packetCount = 0;
-        const startTime = Date.now();
-        
-        return new Promise((resolve) => {
-            const interval = setInterval(async () => {
-                if(!attackActive) {
-                    clearInterval(interval);
-                    resolve();
-                    return;
-                }
-                
-                const result = await sendAttackPacket(target, currentMethod);
-                packetCount++;
-                
-                if(packetCount % 10 === 0) {
-                    const elapsed = (Date.now() - startTime) / 1000;
-                    const rate = (packetCount / elapsed).toFixed(0);
-                    addLog(`📊 Packet: ${packetCount} | Rate: ${rate} req/s`, false);
-                }
-            }, delay);
-            
-            setTimeout(() => {
-                if(attackActive) {
-                    clearInterval(interval);
-                    resolve();
-                }
-            }, duration * 1000);
-        });
-    }
-    
-    async function startAttack() {
-        if(attackActive) {
-            addLog('⚠️ Attack sedang berjalan! Stop dulu.', true);
-            return;
-        }
-        
-        if(!isConnected) {
-            addLog('❌ Bot WhatsApp belum terhubung. Request pairing code dulu!', true);
-            return;
-        }
-        
-        const target = document.getElementById('targetNumber').value.trim();
-        const duration = parseInt(document.getElementById('duration').value);
-        
-        if(!target) {
-            addLog('❌ Target number kosong!', true);
-            return;
-        }
-        
-        // Ambil nama method dari card
-        const activeCard = document.querySelector('.method-card.active');
-        const methodName = activeCard ? activeCard.querySelector('.method-name').innerText : currentMethod;
-        
-        addLog(`🔥 MEMULAI BUG WA KE ${target} | METHOD: ${methodName} | DURASI: ${duration} detik`, false);
-        addLog(`⚠️ PASTIKAN NOMOR SENDER UDAH TERHUBUNG!`, true);
-        
-        attackActive = true;
-        
-        attackWorker().then(() => {
-            if(attackActive) {
-                attackActive = false;
-                addLog(`✅ BUG WA SELESAI!`, false);
-            }
-        });
-        
-        setTimeout(() => {
-            if(attackActive) {
-                attackActive = false;
-                addLog(`⛔ BUG WA DIHENTIKAN setelah ${duration} detik.`, true);
-            }
-        }, duration * 1000);
-    }
-    
-    function stopAttack() {
-        if(!attackActive) {
-            addLog('⚠️ Tidak ada attack yang berjalan.', true);
-            return;
-        }
-        attackActive = false;
-        addLog('🛑 Attack dihentikan oleh user.', true);
-    }
-    
-    addLog('✅ Fitur Bug WA siap. Masukkan nomor sender dan request pairing code.', false);
+    async function stopAttack(){ if(!attackActive){ addLog('Tidak ada attack berjalan',true); return; } const sender=document.getElementById('senderNumber').value.trim(); const target=document.getElementById('targetNumber').value.trim(); const res=await apiCall('/api/stop',{sender,target}); if(res.success){ attackActive=false; addLog('🛑 Attack dihentikan',true); }else{ addLog(`Gagal stop: ${res.message}`,true); } }
+    addLog('✅ Siap. Masukkan API URL, sender, pairing, lalu target.',false);
 </script>
 </body>
 </html>
